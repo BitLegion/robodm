@@ -194,9 +194,10 @@ class TimeManager:
             raise ValueError(f"Unsupported time unit: {unit}")
         return int(timestamp_ns // self.TIME_UNITS[unit])
 
-    def convert_units(self, timestamp: Union[int, float], from_unit: str,
+    def convert_units(self, timestamp: Union[int, float], from_unit: Optional[str],
                       to_unit: str) -> int:
         """Convert timestamp between different units."""
+        from_unit = from_unit or self.time_unit
         timestamp_ns = self.convert_to_nanoseconds(timestamp, from_unit)
         return self.convert_from_nanoseconds(timestamp_ns, to_unit)
 
@@ -391,53 +392,58 @@ class CodecConfig:
             "pixel_format": None,  # No pixel format for rawvideo (binary)
             "options": {},
         },
+        "rawvideo_pickle": {
+            "pixel_format": None,  # No pixel format for rawvideo (binary)
+            "options": {},
+        },
+        "rawvideo_pyarrow": {
+            "pixel_format": None,  # No pixel format for rawvideo (binary)
+            "options": {},
+        },
         "libx264": {
             "pixel_format": "yuv420p",
             "options": {
                 "crf": "23",
-                "preset": "medium"
-            },  # Default quality
+                "preset": "medium",
+            },
         },
         "libx265": {
             "pixel_format": "yuv420p",
             "options": {
                 "crf": "28",
-                "preset": "medium"
-            },  # Default quality for HEVC
+                "preset": "medium",
+            },
         },
         "libaom-av1": {
             "pixel_format": "yuv420p",
             "options": {
-                "g": "2",
-                "crf": "30"
-            }
+                "crf": "30",
+                "cpu-used": "4",
+            },
         },
         "ffv1": {
-            "pixel_format":
-            "yuv420p",  # Default, will be adjusted based on content
-            "options": {},
+            "pixel_format": "yuv420p",
+            "options": {
+                "level": "3",
+            },
         },
     }
 
     def __init__(self,
                  codec: str = "auto",
                  options: Optional[Dict[str, Any]] = None):
-        """
-        Initialize codec configuration.
-
-        Args:
-            codec: Video codec to use. Options: "auto", "rawvideo", "libx264", "libx265", "libaom-av1", "ffv1"
-            options: Additional codec-specific options
-        """
+        """Initialize CodecConfig with codec and options."""
         self.codec = codec
         self.custom_options = options or {}
 
-        if codec not in ["auto"] and codec not in self.CODEC_CONFIGS:
+        # Validate codec if not auto
+        if codec != "auto" and codec not in self.CODEC_CONFIGS:
+            supported_codecs = list(self.CODEC_CONFIGS.keys()) + ["rawvideo_pickle", "rawvideo_pyarrow"]
             raise ValueError(
-                f"Unsupported codec: {codec}. Supported: {list(self.CODEC_CONFIGS.keys())}"
+                f"Unsupported codec: {codec}. Supported: {supported_codecs}"
             )
 
-    def get_codec_for_feature(self, feature_type: FeatureType) -> str:
+    def get_codec_for_feature(self, feature_type: FeatureType, feature_name: Optional[str] = None) -> str:
         """Determine the appropriate codec for a given feature type."""
 
         data_shape = feature_type.shape
@@ -513,6 +519,34 @@ class CodecConfig:
         options.update(self.custom_options)
         return options
 
+    def get_container_codec(self, codec: str) -> str:
+        """Get the container codec for a given codec. For local CodecConfig, it's the same."""
+        return codec
+
+    def is_image_codec(self, codec: str) -> bool:
+        """Check if a codec is an image codec."""
+        return codec in ["libx264", "libx265", "libaom-av1", "ffv1"]
+
+    def is_raw_data_codec(self, codec: str) -> bool:
+        """Check if a codec is a raw data codec."""
+        return codec.startswith("rawvideo")
+
+    def get_internal_codec(self, codec: str) -> Optional[str]:
+        """Get the internal codec implementation for raw data codecs."""
+        if codec == "rawvideo":
+            return "pickle_raw"
+        elif codec == "rawvideo_pickle":
+            return "pickle_raw"
+        elif codec == "rawvideo_pyarrow":
+            return "pyarrow_raw"
+        return None
+
+    def get_raw_codec_name(self, codec: str) -> str:
+        """Get the raw codec name for a given codec."""
+        if codec.startswith("rawvideo"):
+            return codec
+        return "rawvideo"
+
 
 class Trajectory(TrajectoryInterface):
 
@@ -559,9 +593,7 @@ class Trajectory(TrajectoryInterface):
         # Initialize codec configuration with separate video and raw codec support
         self.codec_config = CodecConfig(
             codec=video_codec,
-            options=codec_options,
-            video_codec=video_codec if video_codec != "auto" else None,
-            raw_codec=raw_codec
+            options=codec_options
         )
 
         # Dependency injection - set early so they're available during init
@@ -1180,7 +1212,7 @@ class Trajectory(TrajectoryInterface):
             if force_direct_encoding:
                 # Get the optimal codec for this feature type
                 target_codec = self.codec_config.get_codec_for_feature(feature_type, feature)
-                container_codec = self.codec_config.get_container_codec(target_codec)
+                container_codec = target_codec  # For local CodecConfig, container codec is the same
                 encoding = container_codec
             else:
                 # Use rawvideo for intermediate encoding (legacy behavior)
@@ -1440,13 +1472,13 @@ class Trajectory(TrajectoryInterface):
 
             if is_image_data:
                 # Check if this image feature should be transcoded to video codec
-                target_encoding = self._get_encoding_of_feature(None, feature_type, feature_name)
+                target_encoding = self._get_encoding_of_feature(None, feature_type)
                 if target_encoding in {"ffv1", "libaom-av1", "libx264", "libx265"}:
                     has_image_features = True
                     logger.debug(f"Feature '{feature_name}' identified as image for video transcoding")
             else:
                 # Check if this raw data feature should be compressed
-                target_encoding = self._get_encoding_for_raw_data(feature_type, feature_name)
+                target_encoding = self._get_encoding_for_raw_data(feature_type)
                 if target_encoding != "rawvideo":
                     has_raw_data_features = True
                     logger.debug(f"Feature '{feature_name}' identified as raw data for compression")
@@ -1498,7 +1530,7 @@ class Trajectory(TrajectoryInterface):
                 continue
 
             # Determine target encoding
-            target_encoding = self._get_encoding_of_feature(None, feature_type, feature_name)
+            target_encoding = self._get_encoding_of_feature(None, feature_type)
 
             # Only handle video container codecs, skip rawvideo variants
             if target_encoding in {"ffv1", "libaom-av1", "libx264", "libx265"}:
@@ -1567,7 +1599,7 @@ class Trajectory(TrajectoryInterface):
 
             if not is_image_data:
                 # For non-image data, determine if we should compress
-                target_encoding = self._get_encoding_for_raw_data(feature_type, feature_name)
+                target_encoding = self._get_encoding_for_raw_data(feature_type)
 
                 if target_encoding != "rawvideo":  # Only transcode if compression is desired
                     # Separate container codec from internal codec
@@ -1608,19 +1640,18 @@ class Trajectory(TrajectoryInterface):
 
 
 
-    def _get_encoding_for_raw_data(self, feature_type: FeatureType, feature_name: Optional[str] = None) -> str:
+    def _get_encoding_for_raw_data(self, feature_type: FeatureType) -> str:
         """
         Determine appropriate encoding for raw (non-image) data.
 
         Args:
             feature_type: The FeatureType of the data
-            feature_name: Optional feature name for feature-specific decisions
 
         Returns:
             Encoding string (e.g., "rawvideo_pyarrow", "rawvideo_pickle")
         """
         # Use the codec config to determine the right codec for this feature
-        return self.codec_config.get_codec_for_feature(feature_type, feature_name)
+        return self.codec_config.get_codec_for_feature(feature_type, None)
 
     def _on_new_stream(self, new_feature, new_encoding, new_feature_type):
         from robodm.backend.base import StreamConfig
