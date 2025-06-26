@@ -104,6 +104,10 @@ celerybeat.pid
 oxe_trajectories/
 droid_100/
 
+# Benchmarking datasets
+robodm_agentic/benchmarking/droid_*/
+.tfds_data/
+
 # SageMath parsed files
 *.sage.py
 

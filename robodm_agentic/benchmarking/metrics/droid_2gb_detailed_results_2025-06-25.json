@@ -1,0 +1,173 @@
+{
+  "metrics": {
+    "benchmark_summary": {
+      "total_queries": 15,
+      "successful_queries": 12,
+      "failed_queries": 3,
+      "success_rate": 80.0
+    },
+    "query_performance": {
+      "total_query_time": 4.2627763748168945,
+      "average_query_time": 0.28418509165445965,
+      "median_query_time": 0.28236937522888184,
+      "min_query_time": 0.1612720489501953,
+      "max_query_time": 0.45273518562316895
+    },
+    "batch_performance": {
+      "batch_total_time": 0.8153355121612549,
+      "batch_throughput": 6.132444773251963,
+      "batch_success": true
+    },
+    "overall_performance": {
+      "total_benchmark_time": 5.252862930297852,
+      "queries_per_second": 2.8555856490147287
+    }
+  },
+  "individual_results": [
+    {
+      "query": "How many trajectories do we have?",
+      "time": 0.16451668739318848,
+      "success": true,
+      "result": "Query executed successfully. Result: 20",
+      "error": null
+    },
+    {
+      "query": "Find all successful trajectories",
+      "time": 0.290635347366333,
+      "success": true,
+      "result": "Query executed successfully. Result: 0",
+      "error": null
+    },
+    {
+      "query": "Show me 10 random trajectories",
+      "time": 0.17195820808410645,
+      "success": true,
+      "result": "Query executed successfully. Result: ['AUTOLab_success_2023-11-07_Tue_Nov__7_16:42:50_2023', 'AUTOLab_success_2023-07-21_Fri_Jul_21_12:59:06_2023', 'AUTOLab_success_2023-07-14_Fri_Jul_14_17:29:17_2023', 'AUTOLab_failure_2023-07-21_Fri_Jul_21_12:14:36_2023', 'AUTOLab_failure_2023-11-26_Sun_Nov_26_17:10:26_2023', 'AUTOLab_success_2023-07-21_Fri_Jul_21_15:14:06_2023', 'AUTOLab_success_2023-07-27_Thu_Jul_27_10:21:41_2023', 'AUTOLab_failure_2023-12-13_Wed_Dec_13_22:00:55_2023', 'AUTOLab_success_2023-10-13_Fri_Oct_13_19:42:03_2023', 'AUTOLab_success_2023-12-02_Sat_Dec__2_15:13:43_2023']",
+      "error": null
+    },
+    {
+      "query": "Count trajectories by length",
+      "time": 0.24095606803894043,
+      "success": true,
+      "result": "Query executed successfully. Result: 0",
+      "error": null
+    },
+    {
+      "query": "Find trajectories with hidden views",
+      "time": 0.26476383209228516,
+      "success": true,
+      "result": "Query executed successfully. Result: []",
+      "error": null
+    },
+    {
+      "query": "Show me frames where the robot is grasping",
+      "time": 0.31925153732299805,
+      "success": false,
+      "result": "Query execution failed: Error executing tool 'get_trajectory_frames': RoboDMInterface.get_trajectory_frames() got an unexpected keyword argument 'filter_metadata'",
+      "error": "Error executing tool 'get_trajectory_frames': RoboDMInterface.get_trajectory_frames() got an unexpected keyword argument 'filter_metadata'"
+    },
+    {
+      "query": "Find trajectories with red objects",
+      "time": 0.26239800453186035,
+      "success": true,
+      "result": "Query executed successfully. Result: []",
+      "error": null
+    },
+    {
+      "query": "Analyze robot actions in trajectories",
+      "time": 0.3292391300201416,
+      "success": true,
+      "result": "Could not process frames. Execution result: ['AUTOLab_success_2023-11-07_Tue_Nov__7_16:42:50_2023', 'AUTOLab_success_2023-10-27_Fri_Oct_27_19:56:07_2023', 'AUTOLab_success_2023-08-18_Fri_Aug_18_12:27:46_2023', 'AUTOLab_success_2023-12-02_Sat_Dec__2_13:35:43_2023', 'AUTOLab_failure_2023-10-07_Sat_Oct__7_19:18:01_2023', 'AUTOLab_success_2023-07-14_Fri_Jul_14_17:29:17_2023', 'AUTOLab_failure_2023-10-15_Sun_Oct_15_18:30:17_2023', 'AUTOLab_failure_2023-07-21_Fri_Jul_21_12:14:36_2023', 'AUTOLab_success_2023-08-18_Fri_Aug_18_12:16:14_2023', 'AUTOLab_success_2023-07-21_Fri_Jul_21_12:59:06_2023', 'AUTOLab_failure_2023-12-13_Wed_Dec_13_22:00:55_2023', 'AUTOLab_success_2023-07-21_Fri_Jul_21_15:14:06_2023', 'AUTOLab_success_2023-10-27_Fri_Oct_27_20:45:28_2023', 'AUTOLab_success_2023-07-27_Thu_Jul_27_10:21:41_2023', 'AUTOLab_success_2023-12-02_Sat_Dec__2_17:32:21_2023', 'AUTOLab_success_2023-12-02_Sat_Dec__2_15:13:43_2023', 'AUTOLab_failure_2023-11-26_Sun_Nov_26_17:10:26_2023', 'AUTOLab_success_2023-10-13_Fri_Oct_13_19:42:03_2023', 'AUTOLab_success_2023-11-28_Tue_Nov_28_08:40:44_2023', 'AUTOLab_failure_2023-07-26_Wed_Jul_26_17:51:27_2023']",
+      "error": null
+    },
+    {
+      "query": "Compare successful vs failed trajectories",
+      "time": 0.28236937522888184,
+      "success": true,
+      "result": "Query executed successfully. Result: 0",
+      "error": null
+    },
+    {
+      "query": "Find trajectories longer than 100 timesteps",
+      "time": 0.35825657844543457,
+      "success": true,
+      "result": "Query executed successfully. Result: []",
+      "error": null
+    },
+    {
+      "query": "Show me the beginning and end of trajectories",
+      "time": 0.37881994247436523,
+      "success": false,
+      "result": "Query execution failed: Error executing tool 'slice_trajectory': Trajectory  not found",
+      "error": "Error executing tool 'slice_trajectory': Trajectory  not found"
+    },
+    {
+      "query": "Find trajectories with specific features",
+      "time": 0.3255786895751953,
+      "success": true,
+      "result": "Query executed successfully. Result: []",
+      "error": null
+    },
+    {
+      "query": "Get all trajectory metadata",
+      "time": 0.1612720489501953,
+      "success": true,
+      "result": "Query executed successfully. Result: ['AUTOLab_success_2023-11-07_Tue_Nov__7_16:42:50_2023', 'AUTOLab_success_2023-10-27_Fri_Oct_27_19:56:07_2023', 'AUTOLab_success_2023-08-18_Fri_Aug_18_12:27:46_2023', 'AUTOLab_success_2023-12-02_Sat_Dec__2_13:35:43_2023', 'AUTOLab_failure_2023-10-07_Sat_Oct__7_19:18:01_2023', 'AUTOLab_success_2023-07-14_Fri_Jul_14_17:29:17_2023', 'AUTOLab_failure_2023-10-15_Sun_Oct_15_18:30:17_2023', 'AUTOLab_failure_2023-07-21_Fri_Jul_21_12:14:36_2023', 'AUTOLab_success_2023-08-18_Fri_Aug_18_12:16:14_2023', 'AUTOLab_success_2023-07-21_Fri_Jul_21_12:59:06_2023', 'AUTOLab_failure_2023-12-13_Wed_Dec_13_22:00:55_2023', 'AUTOLab_success_2023-07-21_Fri_Jul_21_15:14:06_2023', 'AUTOLab_success_2023-10-27_Fri_Oct_27_20:45:28_2023', 'AUTOLab_success_2023-07-27_Thu_Jul_27_10:21:41_2023', 'AUTOLab_success_2023-12-02_Sat_Dec__2_17:32:21_2023', 'AUTOLab_success_2023-12-02_Sat_Dec__2_15:13:43_2023', 'AUTOLab_failure_2023-11-26_Sun_Nov_26_17:10:26_2023', 'AUTOLab_success_2023-10-13_Fri_Oct_13_19:42:03_2023', 'AUTOLab_success_2023-11-28_Tue_Nov_28_08:40:44_2023', 'AUTOLab_failure_2023-07-26_Wed_Jul_26_17:51:27_2023']",
+      "error": null
+    },
+    {
+      "query": "Sample 50 trajectories and analyze their frames",
+      "time": 0.45273518562316895,
+      "success": false,
+      "result": "Query execution failed: Error executing tool 'get_trajectory_frames': Trajectory {{result.traj_ids}} not found",
+      "error": "Error executing tool 'get_trajectory_frames': Trajectory {{result.traj_ids}} not found"
+    },
+    {
+      "query": "Find trajectories with error conditions",
+      "time": 0.2600257396697998,
+      "success": true,
+      "result": "Query executed successfully. Result: []",
+      "error": null
+    }
+  ],
+  "batch_results": {
+    "success": true,
+    "total_time": 0.8153355121612549,
+    "queries": 5,
+    "successful": 5,
+    "failed": 0,
+    "throughput": 6.132444773251963,
+    "results": [
+      {
+        "query": "How many trajectories do we have?",
+        "success": true,
+        "answer": "Query executed successfully. Result: 20",
+        "error": null
+      },
+      {
+        "query": "Find all successful trajectories",
+        "success": true,
+        "answer": "Query executed successfully. Result: 0",
+        "error": null
+      },
+      {
+        "query": "Show me 10 random trajectories",
+        "success": true,
+        "answer": "Query executed successfully. Result: ['AUTOLab_failure_2023-11-26_Sun_Nov_26_17:10:26_2023', 'AUTOLab_success_2023-12-02_Sat_Dec__2_17:32:21_2023', 'AUTOLab_failure_2023-07-21_Fri_Jul_21_12:14:36_2023', 'AUTOLab_success_2023-07-14_Fri_Jul_14_17:29:17_2023', 'AUTOLab_success_2023-08-18_Fri_Aug_18_12:27:46_2023', 'AUTOLab_success_2023-12-02_Sat_Dec__2_15:13:43_2023', 'AUTOLab_success_2023-10-27_Fri_Oct_27_19:56:07_2023', 'AUTOLab_success_2023-12-02_Sat_Dec__2_13:35:43_2023', 'AUTOLab_failure_2023-10-07_Sat_Oct__7_19:18:01_2023', 'AUTOLab_failure_2023-07-26_Wed_Jul_26_17:51:27_2023']",
+        "error": null
+      },
+      {
+        "query": "Count trajectories by length",
+        "success": true,
+        "answer": "Query executed successfully. Result: 0",
+        "error": null
+      },
+      {
+        "query": "Find trajectories with hidden views",
+        "success": true,
+        "answer": "Query executed successfully. Result: []",
+        "error": null
+      }
+    ]
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "benchmark_summary": {
+    "total_queries": 15,
+    "successful_queries": 12,
+    "failed_queries": 3,
+    "success_rate": 80.0
+  },
+  "query_performance": {
+    "total_query_time": 6.186882495880127,
+    "average_query_time": 0.41245883305867515,
+    "median_query_time": 0.2827587127685547,
+    "min_query_time": 0.135162353515625,
+    "max_query_time": 2.2154650688171387
+  },
+  "batch_performance": {
+    "batch_total_time": 0.8298671245574951,
+    "batch_throughput": 6.025060942938448,
+    "batch_success": true
+  },
+  "overall_performance": {
+    "total_benchmark_time": 7.214508533477783,
+    "queries_per_second": 2.079143704715973
+  }
+} 
