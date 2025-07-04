@@ -6,7 +6,6 @@
     "success_rate": 80.0
   },
   "query_performance": {
-    "total_query_time": 6.387765407562256,
     "average_query_time": 0.4258510271708171,
     "median_query_time": 0.279754638671875,
     "min_query_time": 0.14299821853637695,
